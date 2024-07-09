@@ -6,10 +6,13 @@ import org.springframework.web.bind.annotation.*;
 
 import com.api.antonio.modelo.Cliente;
 import com.api.antonio.repositorio.ClienteRepositorio;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -90,5 +93,24 @@ public class ClienteControlador {
                     return ResponseEntity.ok(datosEspecificos);
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Autowired
+    private InformeServicio informeServicio;
+
+    @GetMapping("/informe")
+    public String generarInformeClientes(@RequestParam(required = false) Map<String, Object> parametros) {
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("informes/Clientes2.jasper");
+            if (inputStream == null) {
+                throw new RuntimeException("No se pudo encontrar el archivo Clientes2.jasper");
+            }
+
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(inputStream);
+            return informeServicio.generarReporteBase64(jasperReport, parametros != null ? parametros : new HashMap<>());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al generar el informe de clientes", e);
+        }
     }
 }
