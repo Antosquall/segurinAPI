@@ -1,5 +1,6 @@
 package com.api.antonio.modelo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +32,7 @@ public class Siniestro {
     @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_Siniestros")
     private int idSiniestro;
     /**
      * Número identificativo del siniestro.

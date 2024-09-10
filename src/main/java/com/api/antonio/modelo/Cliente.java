@@ -189,6 +189,36 @@ public class Cliente {
         this.referido = referido;
         this.vip = vip;
     }
+    
+    
+    public Cliente(String dni, String nombre, String apellido, String direccion, String telefono,
+            String mail, LocalDate fechaNacimiento, String genero, int totalPolizas, int bonificacion,
+            String estadoCivil, int numParientes, String profesion, String estudios, int ingresosAnuales,
+            LocalDate fechaBaja, String observaciones, String nacionalidad,
+            String referido, String vip) {
+        
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.mail = mail;
+        this.fechaNacimiento = fechaNacimiento;
+        this.genero = genero;
+        this.totalPolizas = totalPolizas;
+        this.bonificacion = bonificacion;
+        this.estadoCivil = estadoCivil;
+        this.numParientes = numParientes;
+        this.profesion = profesion;
+        this.estudios = estudios;
+        this.ingresosAnuales = ingresosAnuales;
+        this.fechaRegistro = LocalDate.now();
+        this.fechaBaja = fechaBaja;
+        this.observaciones = observaciones;
+        this.nacionalidad = nacionalidad;
+        this.referido = referido;
+        this.vip = vip;
+    }
 
     public Cliente(int idCliente, String dni, String nombre, String apellido) {
         this.idCliente = idCliente;

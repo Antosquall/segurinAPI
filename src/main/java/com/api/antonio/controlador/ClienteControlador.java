@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.api.antonio.modelo.Cliente;
 import com.api.antonio.repositorio.ClienteRepositorio;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -34,39 +36,20 @@ public class ClienteControlador {
     }
 
     @PostMapping
-    public Cliente crearCliente(@RequestBody Cliente cliente) {
-        return clienteRepositorio.save(cliente);
+    public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente) {
+        Cliente savedCliente = clienteRepositorio.save(cliente);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCliente);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> actualizarCliente(@PathVariable int id, @RequestBody Cliente clienteDetalles) {
-        return clienteRepositorio.findById(id)
-                .map(cliente -> {
-                    cliente.setDNI(clienteDetalles.getDNI());
-                    cliente.setNombre(clienteDetalles.getNombre());
-                    cliente.setApellido(clienteDetalles.getApellido());
-                    cliente.setDireccion(clienteDetalles.getDireccion());
-                    cliente.setTelefono(clienteDetalles.getTelefono());
-                    cliente.setMail(clienteDetalles.getMail());
-                    cliente.setFechaNacimiento(clienteDetalles.getFechaNacimiento());
-                    cliente.setGenero(clienteDetalles.getGenero());
-                    cliente.setTotalPolizas(clienteDetalles.getTotalPolizas());
-                    cliente.setBonificacion(clienteDetalles.getBonificacion());
-                    cliente.setEstadoCivil(clienteDetalles.getEstadoCivil());
-                    cliente.setNumParientes(clienteDetalles.getNumParientes());
-                    cliente.setProfesion(clienteDetalles.getProfesion());
-                    cliente.setEstudios(clienteDetalles.getEstudios());
-                    cliente.setIngresosAnuales(clienteDetalles.getIngresosAnuales());
-                    cliente.setFechaRegistro(clienteDetalles.getFechaRegistro());
-                    cliente.setFechaBaja(clienteDetalles.getFechaBaja());
-                    cliente.setObservaciones(clienteDetalles.getObservaciones());
-                    cliente.setNacionalidad(clienteDetalles.getNacionalidad());
-                    cliente.setReferido(clienteDetalles.getReferido());
-                    cliente.setVip(clienteDetalles.getVip());
-                    Cliente clienteActualizado = clienteRepositorio.save(cliente);
-                    return ResponseEntity.ok(clienteActualizado);
-                })
-                .orElse(ResponseEntity.notFound().build());
+        if(!clienteRepositorio.existsById(id)){
+            return ResponseEntity.notFound().build();
+        }
+        clienteDetalles.setIdCliente(id);
+        Cliente clienteSalvado= clienteRepositorio.save(clienteDetalles);
+        return ResponseEntity.ok(clienteSalvado);
+
     }
 
     @DeleteMapping("/{id}")
@@ -107,10 +90,19 @@ public class ClienteControlador {
             }
 
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(inputStream);
-            return informeServicio.generarReporteBase64(jasperReport, parametros != null ? parametros : new HashMap<>());
+            //return informeServicio.generarReporteBase64(jasperReport, parametros != null ? parametros : new HashMap<>());
+            //String conca = informeServicio.generarReporteBase64(jasperReport, parametros != null ? parametros : new HashMap<>());
+            String conca;
+
+            ObjectMapper mapper = new ObjectMapper();
+            conca = mapper.writeValueAsString(informeServicio.generarReporteBase64(jasperReport, parametros != null ? parametros : new HashMap<>()));
+
+            return conca;
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error al generar el informe de clientes", e);
         }
     }
+
 }

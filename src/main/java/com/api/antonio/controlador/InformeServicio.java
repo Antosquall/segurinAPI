@@ -23,6 +23,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class InformeServicio {
 
+        private String informeBase64;
+
+    /**
+     * Get the value of informeBase64
+     *
+     * @return the value of informeBase64
+     */
+    public String getInformeBase64() {
+        return informeBase64;
+    }
+
+    /**
+     * Set the value of informeBase64
+     *
+     * @param informeBase64 new value of informeBase64
+     */
+    public void setInformeBase64(String informeBase64) {
+        this.informeBase64 = informeBase64;
+    }
+
+    
     @Autowired
     private DataSource dataSource;
 
@@ -40,4 +61,6 @@ public class InformeServicio {
             throw new RuntimeException("Error al generar el reporte", e);
         }
     }
+    
+    
 }

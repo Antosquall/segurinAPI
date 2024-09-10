@@ -4,6 +4,7 @@
  */
 package com.api.antonio.controlador;
 
+import com.api.antonio.modelo.Cliente;
 import com.api.antonio.modelo.Poliza;
 import com.api.antonio.repositorio.PolizaRepositorio;
 import java.util.HashMap;
@@ -34,53 +35,35 @@ public class PolizaControlador {
     
     
     @GetMapping
-    public List<Poliza> obtenerTodosLosClientes() {
+    public List<Poliza> obtenerTodasLasPolizas() {
         return polizaRepositorio.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Poliza> obtenerClientePorId(@PathVariable int id) {
+    public ResponseEntity<Poliza> obtenerPolizaPorId(@PathVariable int id) {
         return polizaRepositorio.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Poliza crearCliente(@RequestBody Poliza poliza) {
+    public Poliza crearPoliza(@RequestBody Poliza poliza) {
         return polizaRepositorio.save(poliza);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Poliza> actualizarCliente(@PathVariable int id, @RequestBody Poliza polizaDetalles) {
-//        return polizaRepositorio.findById(id)
-//                .map(poliza -> {
-//                    poliza.setDNI(polizaDetalles.getDNI());
-//                    poliza.setNombre(polizaDetalles.getNombre());
-//                    poliza.setApellido(polizaDetalles.getApellido());
-//                    poliza.setDireccion(polizaDetalles.getDireccion());
-//                    poliza.setTelefono(polizaDetalles.getTelefono());
-//                    poliza.setMail(polizaDetalles.getMail());
-//                    poliza.setFechaNacimiento(polizaDetalles.getFechaNacimiento());
-//                    poliza.setGenero(polizaDetalles.getGenero());
-//                    poliza.setTotalPolizas(polizaDetalles.getTotalPolizas());
-//                    poliza.setBonificacion(polizaDetalles.getBonificacion());
-//                    poliza.setEstadoCivil(polizaDetalles.getEstadoCivil());
-//                    poliza.setNumParientes(polizaDetalles.getNumParientes());
-//                    poliza.setProfesion(polizaDetalles.getProfesion());
-//                    poliza.setEstudios(polizaDetalles.getEstudios());
-//                    poliza.setIngresosAnuales(polizaDetalles.getIngresosAnuales());
-//                    poliza.setFechaRegistro(polizaDetalles.getFechaRegistro());
-//                    poliza.setFechaBaja(polizaDetalles.getFechaBaja());
-//                    poliza.setObservaciones(polizaDetalles.getObservaciones());
-//                    poliza.setNacionalidad(polizaDetalles.getNacionalidad());
-//                    poliza.setReferido(polizaDetalles.getReferido());
-//                    poliza.setVip(polizaDetalles.getVip());
-//                    Poliza clienteActualizado = polizaDetalles.save(poliza);
-//                    return ResponseEntity.ok(clienteActualizado);
-//                })
-//                .orElse(ResponseEntity.notFound().build());
-//    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Poliza> actualizarPoliza(@PathVariable int id, @RequestBody Poliza polizaDetalles) {
+        if(!polizaRepositorio.existsById(id)){
+            return ResponseEntity.notFound().build();
+        }
+        polizaDetalles.setIdCliente(id);
+        Poliza polizaSalvado= polizaRepositorio.save(polizaDetalles);
+        return ResponseEntity.ok(polizaSalvado);
 
+    }
+    
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> eliminarPoliza(@PathVariable int id) {
         return polizaRepositorio.findById(id)
@@ -91,7 +74,4 @@ public class PolizaControlador {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-  
-    
-    
 }
