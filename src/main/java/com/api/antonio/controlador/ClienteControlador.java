@@ -15,15 +15,18 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/clientes")
+@PreAuthorize("denyAll()")
 public class ClienteControlador {
 
     @Autowired
     private ClienteRepositorio clienteRepositorio;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('READ') or hasAuthority('CREATE')")
     public List<Cliente> obtenerTodosLosClientes() {
         return clienteRepositorio.findAll();
     }

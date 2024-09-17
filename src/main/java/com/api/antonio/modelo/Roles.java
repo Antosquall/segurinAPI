@@ -1,8 +1,14 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.api.antonio.modelo;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,34 +21,26 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
 
-
 @Setter
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="usuario")
-public class Usuario {
+@Table(name="roles")
+public class Roles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique= true)
-    private String nombreUsuario;
-    @Column(name="password")
-    private String password;
-    @Column(name="isEnabled")
-    private Boolean isEnabled;
-    @Column(name="accountNoExpired")
-    private Boolean accountNoExpired;
-    @Column(name="accountNoLocked")
-    private Boolean accountNoLocked;
-    @Column(name="credencialNoExpired")
-    private Boolean credencialNoExpired;
+
+    @Column(name = "Rol")
+    @Enumerated(EnumType.STRING)
+    private RoleEnum roleEnum;
+    
     
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name= "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Roles> roles = new HashSet<>();
-
+    @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name= "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    private Set<PermissionEntity> permission = new HashSet<>();
 }
+
